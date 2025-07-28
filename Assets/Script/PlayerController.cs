@@ -90,7 +90,9 @@ public class PlayerController : MonoBehaviour
 
         // 检查是否在地面上
         CheckGrounded();
-
+    }
+    void FixedUpdate()
+    {
         // 处理移动
         HandleMovement();
 
@@ -131,14 +133,15 @@ public class PlayerController : MonoBehaviour
             camForward.Normalize();
             camRight.Normalize();
             Vector3 moveDirection = camForward * moveInput.y + camRight * moveInput.x;
-            Vector3 newVelocity = new Vector3(moveDirection.x * currentSpeed, rb.linearVelocity.y, moveDirection.z * currentSpeed);
-            rb.linearVelocity = newVelocity;
+            moveDirection.Normalize();
+            Vector3 movement = moveDirection * currentSpeed * Time.deltaTime;
+            rb.MovePosition(rb.position + movement);
 
-            // 丝滑旋转角色朝向移动方向
+            // 丝滑旋转角色朝向移动方向（使用Rigidbody避免抖动）
             if (moveDirection.sqrMagnitude > 0.01f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSmoothSpeed * Time.deltaTime);
+                rb.MoveRotation(Quaternion.Lerp(rb.rotation, targetRotation, turnSmoothSpeed * Time.deltaTime));
             }
         }
     }
