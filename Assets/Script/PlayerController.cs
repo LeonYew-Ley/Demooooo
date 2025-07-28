@@ -26,6 +26,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private bool isSprinting; private bool jumpPressed;
 
+    [Header("旋转设置")]
+    public float turnSmoothSpeed = 10f; // 丝滑旋转速度
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -115,18 +118,29 @@ public class PlayerController : MonoBehaviour
     }
     void HandleMovement()
     {
-        // 确定当前速度（默认奔跑或冲刺）
+        // 基于摄像机前方和右方进行移动
         float currentSpeed = isSprinting ? sprintSpeed : runSpeed;
-        // 3D移动：保持Y轴速度不变，更新X和Z轴
-        Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
-        Vector3 newVelocity = new Vector3(moveDirection.x * currentSpeed, rb.linearVelocity.y, moveDirection.z * currentSpeed);
-        rb.linearVelocity = newVelocity;
+        Camera cam = Camera.main;
+        if (cam != null)
+        {
+            Vector3 camForward = cam.transform.forward;
+            Vector3 camRight = cam.transform.right;
+            // 忽略Y轴分量，保持在水平面
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+            Vector3 moveDirection = camForward * moveInput.y + camRight * moveInput.x;
+            Vector3 newVelocity = new Vector3(moveDirection.x * currentSpeed, rb.linearVelocity.y, moveDirection.z * currentSpeed);
+            rb.linearVelocity = newVelocity;
 
-        // 翻转角色朝向（基于X轴移动）
-        if (moveInput.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
-        else if (moveInput.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+            // 丝滑旋转角色朝向移动方向
+            if (moveDirection.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSmoothSpeed * Time.deltaTime);
+            }
+        }
     }
     void HandleJump()
     {
