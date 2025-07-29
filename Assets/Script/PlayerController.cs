@@ -117,6 +117,7 @@ public class PlayerController : MonoBehaviour
     {
         // 使用球形检测来判断是否在地面上（3D版本）
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
+
     }
     void HandleMovement()
     {
