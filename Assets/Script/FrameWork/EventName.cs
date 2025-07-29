@@ -8,4 +8,5 @@ public static class EventName
     public const string ShowGameOver = nameof(ShowGameOver);
     public const string HideGameOver = nameof(HideGameOver);
     public const string OpenGameOverCanvas = nameof(OpenGameOverCanvas);
+    public const string SpawnPlayer = nameof(SpawnPlayer);
 }

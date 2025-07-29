@@ -1,11 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public Button[] buttons;
     public GameObject[] canvasList;
 
     void OnEnable()
     {
+        // TODO:添加按钮点击事件监听
+
+        // Canvas开闭事件
         SEvent.Instance.AddListener(EventName.OpenGameOverCanvas, ShowGameOverCanvas);
     }
     void OnDisable()
@@ -39,6 +44,7 @@ public class UIManager : MonoBehaviour
 
     #region 各种Canvas显示关闭方法
     public void ShowGameOverCanvas() => ShowCanvas(CanvasEnums.GameOver);
+    public void ShowHomeCanvas() => ShowCanvas(CanvasEnums.GameOver);
     #endregion
 
 }
