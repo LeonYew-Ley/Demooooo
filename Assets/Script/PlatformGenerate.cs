@@ -11,6 +11,9 @@ public class PlatformGenerate : MonoBehaviour
     [HideInInspector]
     public float cellSize = 1f; // 自动获取格子边长（外接圆半径）
 
+    [Header("六边形朝向开关 (true=平顶, false=尖顶)")]
+    public bool isFlatTopped = true; // 控制六边形朝向
+
     [Header("生成父物体")]
     public Transform parentTransform; // 指定生成的父物体
 
@@ -53,11 +56,22 @@ public class PlatformGenerate : MonoBehaviour
     // 轴向坐标转世界坐标
     Vector3 HexToWorld(int q, int r, float size)
     {
-        // 紧密排布：size为六边形外接圆半径
-        // x轴间距: size * 1.5f
-        // z轴间距: size * sqrt(3) * (q + r/2)
-        float x = size * 1.5f * q;
-        float z = size * Mathf.Sqrt(3f) * (r + q / 2f);
-        return new Vector3(x, 0, z);
+        // 平顶六边形
+        if (isFlatTopped)
+        {
+            // x轴间距: size * sqrt(3) * (q + r/2)
+            // z轴间距: size * 1.5f
+            float x = size * Mathf.Sqrt(3f) * (q + r / 2f);
+            float z = size * 1.5f * r;
+            return new Vector3(x, 0, z);
+        }
+        else // 尖顶六边形
+        {
+            // x轴间距: size * 1.5f
+            // z轴间距: size * sqrt(3) * (r + q/2)
+            float x = size * 1.5f * q;
+            float z = size * Mathf.Sqrt(3f) * (r + q / 2f);
+            return new Vector3(x, 0, z);
+        }
     }
 }

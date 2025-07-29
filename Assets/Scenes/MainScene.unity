@@ -552,7 +552,8 @@ MonoBehaviour:
   hexCellPrefab: {fileID: 4936556917798020914, guid: ee3841e10821af94da910c156656e584, type: 3}
   edgeLength: 7
   startPosition: {x: 0, y: 0, z: 0}
-  cellSize: 1
+  cellSize: 0.5
+  parentTransform: {fileID: 1543623132}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,15 +1225,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5749404507044412808, guid: ee3841e10821af94da910c156656e584, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5749404507044412808, guid: ee3841e10821af94da910c156656e584, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5749404507044412808, guid: ee3841e10821af94da910c156656e584, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5749404507044412808, guid: ee3841e10821af94da910c156656e584, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
