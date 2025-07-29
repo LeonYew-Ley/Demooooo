@@ -179,7 +179,9 @@ public class PlayerController : MonoBehaviour
     private void OnPlayerDead()
     {
         // 这里可以禁用输入、播放死亡动画等
-        Debug.Log("PlayerController: 玩家死亡事件收到");
+        SLog.Info("玩家死亡，2s后销毁玩家对象");
+        // 两秒后销毁实例
+        Destroy(gameObject, 2f);
     }
 
     // 在Scene视图中显示地面检测的可视化

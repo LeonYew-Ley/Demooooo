@@ -5,3 +5,8 @@ public enum PlayerId
     C,
     D,
 }
+
+public enum CanvasEnums
+{
+    GameOver,
+}

@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private void OnPlayerDead()
     {
         SLog.Info($"Open Dead Scene");
+        SEvent.Instance.TriggerEvent(EventName.OpenGameOverCanvas);
     }
 
 }
