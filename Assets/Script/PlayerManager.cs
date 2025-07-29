@@ -1,3 +1,5 @@
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -7,6 +9,8 @@ public class PlayerManager : MonoBehaviour
     public Transform spawnPoint;
     [Header("玩家预制体")]
     public GameObject playerPrefab;
+    [Header("玩家摄像机")]
+    public CinemachineCamera playerCamera;
     [Header("玩家实例父物体")]
     public Transform playerParent;
     [HideInInspector]
@@ -27,10 +31,12 @@ public class PlayerManager : MonoBehaviour
     void OnEnable()
     {
         SEvent.Instance.AddListener(EventName.SpawnPlayer, SpawnPlayer);
+        SEvent.Instance.AddListener(EventName.EnablePlayer, EnablePlayer);
     }
     void OnDisable()
     {
         SEvent.Instance.RemoveListener(EventName.SpawnPlayer, SpawnPlayer);
+        SEvent.Instance.RemoveListener(EventName.EnablePlayer, EnablePlayer);
     }
     public void SpawnPlayer()
     {
@@ -50,6 +56,26 @@ public class PlayerManager : MonoBehaviour
         else
         {
             Debug.LogWarning("PlayerManager: 请设置玩家预制体和出生点");
+        }
+    }
+
+    public void EnablePlayer()
+    {
+        // 设置玩家相关属性
+        playerInstance.gameObject.GetComponent<Rigidbody>().useGravity = true;
+        if (playerCamera != null)
+        {
+            playerCamera.Follow = playerInstance.transform;
+            // 查找Player对象下名为"LookAt"的子对象
+            Transform lookAtTarget = playerInstance.transform.Find("LookAt");
+            if (lookAtTarget != null)
+            {
+                playerCamera.LookAt = lookAtTarget;
+            }
+            else
+            {
+                playerCamera.LookAt = playerInstance.transform;
+            }
         }
     }
 }

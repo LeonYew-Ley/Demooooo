@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
         SEvent.Instance.AddListener(EventName.HideHomeCanvas, HideHomeCanvas);
         SEvent.Instance.AddListener(EventName.ShowGameOver, ShowGameOverCanvas);
         SEvent.Instance.AddListener(EventName.HideGameOver, HideGameOverCanvas);
+        SEvent.Instance.AddListener(EventName.ShowCountDownCanvas, ShowCountDownCanvas);
+        SEvent.Instance.AddListener(EventName.HideCountDownCanvas, HideCountDownCanvas);
     }
     void OnDisable()
     {
@@ -24,6 +26,8 @@ public class UIManager : MonoBehaviour
         SEvent.Instance.RemoveListener(EventName.HideHomeCanvas, HideHomeCanvas);
         SEvent.Instance.RemoveListener(EventName.ShowGameOver, ShowGameOverCanvas);
         SEvent.Instance.RemoveListener(EventName.HideGameOver, HideGameOverCanvas);
+        SEvent.Instance.RemoveListener(EventName.ShowCountDownCanvas, ShowCountDownCanvas);
+        SEvent.Instance.RemoveListener(EventName.HideCountDownCanvas, HideCountDownCanvas);
     }
     public void ShowCanvas(CanvasEnums index)
     {
@@ -50,6 +54,7 @@ public class UIManager : MonoBehaviour
         SLog.Info($"Hiding canvas at index: {index}");
     }
 
+
     #region 按钮点击事件
     public void OnStartBtnClick()
     {
@@ -63,6 +68,7 @@ public class UIManager : MonoBehaviour
     public void OnRestartBtnClick()
     {
         SLog.Info("Restart button clicked");
+        SEvent.Instance.TriggerEvent(EventName.GameRestart);
     }
     #endregion
 
@@ -71,6 +77,8 @@ public class UIManager : MonoBehaviour
     public void HideGameOverCanvas() => HideCanvas(CanvasEnums.GameOver);
     public void ShowHomeCanvas() => ShowCanvas(CanvasEnums.GameOver);
     public void HideHomeCanvas() => HideCanvas(CanvasEnums.Home);
+    public void ShowCountDownCanvas() => ShowCanvas(CanvasEnums.CountDown);
+    public void HideCountDownCanvas() => HideCanvas(CanvasEnums.CountDown);
     #endregion
 
 }

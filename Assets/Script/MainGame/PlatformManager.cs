@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlatformGenerate : MonoBehaviour
+public class PlatformManager : MonoBehaviour
 {
     [Header("格子预制体")]
     public GameObject hexCellPrefab; // 正六边形格子的预制体
@@ -15,18 +15,21 @@ public class PlatformGenerate : MonoBehaviour
     [Header("六边形朝向开关 (true=平顶, false=尖顶)")]
     public bool isFlatTopped = false; // 控制六边形朝向
 
-    [Header("生成父物体")]
-    public Transform parentTransform; // 指定生成的父物体
+    // [Header("生成父物体")]
+    // public Transform parentTransform; // 已废弃，不再使用
 
     void OnEnable()
     {
         // 监听生成平台事件
         SEvent.Instance.AddListener(EventName.GenerateHexPlatform, GenerateHexPlatform);
+        SEvent.Instance.AddListener(EventName.DestroyPlatform, DestroyPlatform);
     }
+
     void OnDisable()
     {
         // 移除监听
         SEvent.Instance.RemoveListener(EventName.GenerateHexPlatform, GenerateHexPlatform);
+        SEvent.Instance.RemoveListener(EventName.DestroyPlatform, DestroyPlatform);
     }
     void Start()
     {
@@ -47,7 +50,6 @@ public class PlatformGenerate : MonoBehaviour
     {
         // 参考: https://www.redblobgames.com/grids/hexagons/
         int N = edgeLength;
-        Transform parent = parentTransform != null ? parentTransform : transform;
         if (genPosList == null || genPosList.Length == 0)
         {
             Debug.LogWarning("PlatformGenerate: genPosList 为空，未生成平台");
@@ -64,13 +66,26 @@ public class PlatformGenerate : MonoBehaviour
                     if (Mathf.Max(Mathf.Abs(q), Mathf.Abs(r), Mathf.Abs(s)) < N)
                     {
                         Vector3 pos = HexToWorld(q, r, cellSize) + startPos.position;
-                        Instantiate(hexCellPrefab, pos, Quaternion.identity, parent);
+                        Instantiate(hexCellPrefab, pos, Quaternion.identity, startPos);
                     }
                 }
             }
         }
     }
-
+    // 清理每一层的格子
+    public void DestroyPlatform()
+    {
+        if (genPosList == null || genPosList.Length == 0)
+            return;
+        foreach (var startPos in genPosList)
+        {
+            for (int i = startPos.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = startPos.GetChild(i).gameObject;
+                GameObject.DestroyImmediate(child);
+            }
+        }
+    }
     // 轴向坐标转世界坐标
     Vector3 HexToWorld(int q, int r, float size)
     {

@@ -12,6 +12,7 @@ public enum CanvasEnums
 {
     GameOver,
     Home,
+    CountDown,
 }
 /// <summary>
 /// 按钮枚举，和UIManager中的按钮数组对应
