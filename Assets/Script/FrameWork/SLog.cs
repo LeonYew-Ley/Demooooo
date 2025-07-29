@@ -41,18 +41,18 @@ public static class SLog
             prefix = declaringType != null ? $"[{declaringType.Name}.cs] " : "[Unknown Script] ";
         }
 
-        string formatted = Format(level, prefix + message);
+        string formattedForFile = Format(level, prefix + message);
+        string formattedForUnity = prefix + message;
 
-        WriteToUnityConsole(level, formatted, context);
+        WriteToUnityConsole(level, formattedForUnity, context);
         if (EnableFileLog)
-            WriteToFile(formatted);
+            WriteToFile(formattedForFile);
     }
 
     private static string Format(LogLevel level, string message)
     {
         return $"[{DateTime.Now:HH:mm:ss.fff}] [{level}] {message}";
     }
-
     private static void WriteToUnityConsole(LogLevel level, string msg, UnityEngine.Object context)
     {
         switch (level)

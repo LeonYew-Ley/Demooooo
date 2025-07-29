@@ -8,9 +8,6 @@ public class HexColumn : MonoBehaviour
     public Color triggeredColor = new Color(0.6f, 0f, 1f, 1f); // 紫色
     public float disappearDelay = 2f;
     private bool triggered = false;
-    void OnEnable()
-    {
-    }
     void Start()
     {
         rend = GetComponentInChildren<Renderer>();
@@ -33,9 +30,14 @@ public class HexColumn : MonoBehaviour
         }
     }
 
+    private bool isDisappearing = false;
+
     IEnumerator DisappearAfterDelay()
     {
-        Debug.Log("Column triggered, will disappear after delay.");
+        // 如果已经在消失中，则不再执行，防止重置冷却时间
+        if (isDisappearing) yield break;
+
+        isDisappearing = true;
         yield return new WaitForSeconds(disappearDelay);
         Destroy(gameObject);
     }
