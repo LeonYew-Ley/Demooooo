@@ -4,4 +4,5 @@
 /// </summary>
 public static class EventName
 {
+    public const string PlayerDead = nameof(PlayerDead);
 }

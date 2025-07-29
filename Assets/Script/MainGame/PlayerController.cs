@@ -56,6 +56,8 @@ public class PlayerController : MonoBehaviour
         if (moveAction != null) moveAction.Enable();
         if (jumpAction != null) jumpAction.Enable();
         if (sprintAction != null) sprintAction.Enable();
+        // 监听玩家死亡事件
+        SEvent.Instance.AddListener(EventName.PlayerDead, OnPlayerDead);
     }
     void OnDisable()
     {
@@ -63,6 +65,8 @@ public class PlayerController : MonoBehaviour
         if (moveAction != null) moveAction.Disable();
         if (jumpAction != null) jumpAction.Disable();
         if (sprintAction != null) sprintAction.Disable();
+        // 移除玩家死亡事件监听
+        SEvent.Instance.RemoveListener(EventName.PlayerDead, OnPlayerDead);
     }
 
     void SetupInputActions()
@@ -169,6 +173,13 @@ public class PlayerController : MonoBehaviour
         {
             jumpAction.performed -= OnJump;
         }
+    }
+
+    // 玩家死亡事件回调
+    private void OnPlayerDead()
+    {
+        // 这里可以禁用输入、播放死亡动画等
+        Debug.Log("PlayerController: 玩家死亡事件收到");
     }
 
     // 在Scene视图中显示地面检测的可视化
