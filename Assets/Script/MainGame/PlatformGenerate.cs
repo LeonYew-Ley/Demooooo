@@ -7,16 +7,27 @@ public class PlatformGenerate : MonoBehaviour
 
     [Header("蜂窝参数")]
     public int edgeLength = 7; // 每条边的格子数
-    public Vector3 startPosition = Vector3.zero; // 起始位置
+    [Header("多层平台生成位置（按顺序）")]
+    public Transform[] genPosList; // 多层平台生成位置
     [HideInInspector]
     public float cellSize = 1f; // 自动获取格子边长（外接圆半径）
 
     [Header("六边形朝向开关 (true=平顶, false=尖顶)")]
-    public bool isFlatTopped = true; // 控制六边形朝向
+    public bool isFlatTopped = false; // 控制六边形朝向
 
     [Header("生成父物体")]
     public Transform parentTransform; // 指定生成的父物体
 
+    void OnEnable()
+    {
+        // 监听生成平台事件
+        SEvent.Instance.AddListener(EventName.GenerateHexPlatform, GenerateHexPlatform);
+    }
+    void OnDisable()
+    {
+        // 移除监听
+        SEvent.Instance.RemoveListener(EventName.GenerateHexPlatform, GenerateHexPlatform);
+    }
     void Start()
     {
         // 自动获取cellSize（正六边形边长=模型宽度/2）
@@ -29,7 +40,6 @@ public class PlatformGenerate : MonoBehaviour
                 cellSize = width / 2f;
             }
         }
-        GenerateHexPlatform();
     }
 
     // 生成蜂窝地板
@@ -38,16 +48,24 @@ public class PlatformGenerate : MonoBehaviour
         // 参考: https://www.redblobgames.com/grids/hexagons/
         int N = edgeLength;
         Transform parent = parentTransform != null ? parentTransform : transform;
-        for (int q = -N + 1; q <= N - 1; q++)
+        if (genPosList == null || genPosList.Length == 0)
         {
-            for (int r = -N + 1; r <= N - 1; r++)
+            Debug.LogWarning("PlatformGenerate: genPosList 为空，未生成平台");
+            return;
+        }
+        foreach (var startPos in genPosList)
+        {
+            for (int q = -N + 1; q <= N - 1; q++)
             {
-                int s = -q - r;
-                // 满足大六边形范围条件
-                if (Mathf.Max(Mathf.Abs(q), Mathf.Abs(r), Mathf.Abs(s)) < N)
+                for (int r = -N + 1; r <= N - 1; r++)
                 {
-                    Vector3 pos = HexToWorld(q, r, cellSize) + startPosition;
-                    Instantiate(hexCellPrefab, pos, Quaternion.identity, parent);
+                    int s = -q - r;
+                    // 满足大六边形范围条件
+                    if (Mathf.Max(Mathf.Abs(q), Mathf.Abs(r), Mathf.Abs(s)) < N)
+                    {
+                        Vector3 pos = HexToWorld(q, r, cellSize) + startPos.position;
+                        Instantiate(hexCellPrefab, pos, Quaternion.identity, parent);
+                    }
                 }
             }
         }
