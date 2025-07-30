@@ -28,34 +28,17 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDead()
     {
-        SLog.Info($"Open Dead Scene");
+        SLog.Info($"Open Dead Canvas");
         SEvent.Instance.TriggerEvent(EventName.ShowGameOver);
     }
 
     private void StartGame()
     {
         // 加载主场景
-        // 检查场景是否已加载
-        var scene = SceneManager.GetSceneByName("MainScene");
-        if (!scene.isLoaded)
-        {
-            // 异步加载并在完成后触发事件
-            var asyncOp = SceneManager.LoadSceneAsync("MainScene", LoadSceneMode.Additive);
-            asyncOp.completed += (op) =>
-            {
-                SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
-                SEvent.Instance.TriggerEvent(EventName.GenerateHexPlatform);
-                SEvent.Instance.TriggerEvent(EventName.SpawnPlayer);
-                SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
-            };
-        }
-        else
-        {
-            SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
-            SEvent.Instance.TriggerEvent(EventName.GenerateHexPlatform);
-            SEvent.Instance.TriggerEvent(EventName.SpawnPlayer);
-            SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
-        }
+        SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
+        SEvent.Instance.TriggerEvent(EventName.GenerateHexPlatform);
+        SEvent.Instance.TriggerEvent(EventName.SpawnPlayer);
+        SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
         SLog.Info("Game started.");
     }
 
@@ -68,12 +51,7 @@ public class GameManager : MonoBehaviour
         // 回到主界面
         this.TriggerEvent(EventName.ShowHomeCanvas);
         this.TriggerEvent(EventName.HideGameOver);
-        // 销毁MainScene
-        var scene = SceneManager.GetSceneByName("MainScene");
-        if (scene.isLoaded)
-        {
-            SceneManager.UnloadSceneAsync("MainScene");
-        }
+
         SLog.Info("Game Restarted.");
     }
 
