@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour
             jumpPressed = false; // 重置跳跃标志
         }
     }
-    // Dash输入回调
+    // Dash冲刺输入回调
     void OnDash(InputAction.CallbackContext context)
     {
         if (!isDashing && dashCooldownTimer <= 0)
