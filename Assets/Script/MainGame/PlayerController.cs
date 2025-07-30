@@ -5,7 +5,15 @@ public class PlayerController : MonoBehaviour
 {
     [Header("移动设置")]
     public float runSpeed = 5f;      // 默认奔跑速度
-    public float sprintSpeed = 8f;   // 冲刺速度    [Header("跳跃设置")]
+    [Header("Dash设置")]
+    public float dashForce = 20f;    // Dash冲刺力度
+    public float dashDuration = 0.2f; // Dash持续时间
+    public float dashCooldown = 1f;   // Dash冷却时间
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private float dashCooldownTimer = 0f;
+    private Vector3 dashDirection;
+    [Header("跳跃设置")]
     public float jumpForce = 10f;
     public float gravityScale = 2f;  // 重力倍数，越大下落越快
     public LayerMask groundLayer = 1;
@@ -18,13 +26,13 @@ public class PlayerController : MonoBehaviour
     // 输入动作引用
     private InputAction moveAction;
     private InputAction jumpAction;
-    private InputAction sprintAction;
+    private InputAction dashAction;
 
     // 私有变量
     private Rigidbody rb;
     private bool isGrounded;
     private Vector2 moveInput;
-    private bool isSprinting; private bool jumpPressed;
+    private bool jumpPressed;
 
     [Header("旋转设置")]
     public float turnSmoothSpeed = 10f; // 丝滑旋转速度
@@ -53,7 +61,7 @@ public class PlayerController : MonoBehaviour
         SetupInputActions();
         if (moveAction != null) moveAction.Enable();
         if (jumpAction != null) jumpAction.Enable();
-        if (sprintAction != null) sprintAction.Enable();
+        if (dashAction != null) dashAction.Enable();
         // 监听玩家死亡事件
         SEvent.Instance.AddListener(EventName.PlayerDead, OnPlayerDead);
     }
@@ -62,7 +70,7 @@ public class PlayerController : MonoBehaviour
         // 禁用输入动作
         if (moveAction != null) moveAction.Disable();
         if (jumpAction != null) jumpAction.Disable();
-        if (sprintAction != null) sprintAction.Disable();
+        if (dashAction != null) dashAction.Disable();
         // 移除玩家死亡事件监听
         SEvent.Instance.RemoveListener(EventName.PlayerDead, OnPlayerDead);
     }
@@ -74,12 +82,17 @@ public class PlayerController : MonoBehaviour
             // 获取输入动作
             moveAction = inputActions.FindAction("Move");
             jumpAction = inputActions.FindAction("Jump");
-            sprintAction = inputActions.FindAction("Sprint");
+            dashAction = inputActions.FindAction("Dash");
 
             // 绑定跳跃事件
             if (jumpAction != null)
             {
                 jumpAction.performed += OnJump;
+            }
+            // 绑定Dash事件
+            if (dashAction != null)
+            {
+                dashAction.performed += OnDash;
             }
         }
     }
@@ -90,16 +103,37 @@ public class PlayerController : MonoBehaviour
         // 获取输入
         GetInput();
 
+        // Dash冷却计时
+        if (dashCooldownTimer > 0)
+            dashCooldownTimer -= Time.deltaTime;
+
+        // Dash持续计时
+        if (isDashing)
+        {
+            dashTimer -= Time.deltaTime;
+            if (dashTimer <= 0)
+            {
+                isDashing = false;
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0); // 停止Dash的水平速度
+            }
+        }
+
         // 检查是否在地面上
         CheckGrounded();
     }
     void FixedUpdate()
     {
-        // 处理移动
-        HandleMovement();
-
-        // 处理跳跃
-        HandleJump();
+        if (isDashing)
+        {
+            rb.linearVelocity = dashDirection * dashForce;
+        }
+        else
+        {
+            // 处理移动
+            HandleMovement();
+            // 处理跳跃
+            HandleJump();
+        }
     }
     void GetInput()
     {
@@ -107,12 +141,6 @@ public class PlayerController : MonoBehaviour
         if (moveAction != null)
         {
             moveInput = moveAction.ReadValue<Vector2>();
-        }
-
-        // 检查是否按下冲刺键
-        if (sprintAction != null)
-        {
-            isSprinting = sprintAction.IsPressed();
         }
     }
     void CheckGrounded()
@@ -124,7 +152,7 @@ public class PlayerController : MonoBehaviour
     void HandleMovement()
     {
         // 基于摄像机前方和右方进行移动，支持手柄摇杆幅度
-        float currentSpeed = isSprinting ? sprintSpeed : runSpeed;
+        float currentSpeed = runSpeed;
         Camera cam = Camera.main;
         if (cam != null)
         {
@@ -159,9 +187,31 @@ public class PlayerController : MonoBehaviour
             jumpPressed = false; // 重置跳跃标志
         }
     }
+    // Dash输入回调
+    void OnDash(InputAction.CallbackContext context)
+    {
+        if (!isDashing && dashCooldownTimer <= 0)
+        {
+            // Dash方向为当前移动方向或角色前方
+            Camera cam = Camera.main;
+            Vector3 camForward = cam != null ? cam.transform.forward : transform.forward;
+            Vector3 camRight = cam != null ? cam.transform.right : transform.right;
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+            Vector3 moveDir = camForward * moveInput.y + camRight * moveInput.x;
+            if (moveDir.sqrMagnitude < 0.01f)
+                moveDir = transform.forward; // 没有输入时向前Dash
+            dashDirection = moveDir.normalized;
+            isDashing = true;
+            dashTimer = dashDuration;
+            dashCooldownTimer = dashCooldown;
+        }
+    }
 
     // 跳跃输入回调
-    private void OnJump(InputAction.CallbackContext context)
+    void OnJump(InputAction.CallbackContext context)
     {
         jumpPressed = true;
     }
@@ -173,10 +223,14 @@ public class PlayerController : MonoBehaviour
         {
             jumpAction.performed -= OnJump;
         }
+        if (dashAction != null)
+        {
+            dashAction.performed -= OnDash;
+        }
     }
 
     // 玩家死亡事件回调
-    private void OnPlayerDead()
+    void OnPlayerDead()
     {
         // 这里可以禁用输入、播放死亡动画等
         SLog.Info("玩家死亡，2s后销毁玩家对象");
