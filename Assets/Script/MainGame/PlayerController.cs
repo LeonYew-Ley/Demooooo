@@ -46,13 +46,11 @@ public class PlayerController : MonoBehaviour
             groundCheckObj.transform.localPosition = new Vector3(0, -0.5f, 0);
             groundCheck = groundCheckObj.transform;
         }
-
-        // 初始化输入系统
-        SetupInputActions();
     }
     void OnEnable()
     {
-        // 启用输入动作
+        // 初始化输入系统（每次启用都重新绑定，防止实例化后失效）
+        SetupInputActions();
         if (moveAction != null) moveAction.Enable();
         if (jumpAction != null) jumpAction.Enable();
         if (sprintAction != null) sprintAction.Enable();
@@ -125,7 +123,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleMovement()
     {
-        // 基于摄像机前方和右方进行移动
+        // 基于摄像机前方和右方进行移动，支持手柄摇杆幅度
         float currentSpeed = isSprinting ? sprintSpeed : runSpeed;
         Camera cam = Camera.main;
         if (cam != null)
@@ -137,13 +135,15 @@ public class PlayerController : MonoBehaviour
             camRight.y = 0;
             camForward.Normalize();
             camRight.Normalize();
+            // 不归一化moveDirection，保留摇杆幅度
             Vector3 moveDirection = camForward * moveInput.y + camRight * moveInput.x;
-            moveDirection.Normalize();
-            Vector3 movement = moveDirection * currentSpeed * Time.deltaTime;
+            float inputMagnitude = Mathf.Clamp01(moveInput.magnitude); // 防止溢出
+            Vector3 movement = moveDirection * currentSpeed * inputMagnitude * Time.deltaTime;
             rb.MovePosition(rb.position + movement);
 
             // 丝滑旋转角色朝向移动方向（使用Rigidbody避免抖动）
-            if (moveDirection.sqrMagnitude > 0.01f)
+            // 只有输入幅度大于死区时才旋转，防止松开摇杆后角色还在转
+            if (inputMagnitude > 0.1f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
                 rb.MoveRotation(Quaternion.Lerp(rb.rotation, targetRotation, turnSmoothSpeed * Time.deltaTime));

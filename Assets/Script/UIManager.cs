@@ -75,7 +75,7 @@ public class UIManager : MonoBehaviour
     #region 各种Canvas显示关闭方法
     public void ShowGameOverCanvas() => ShowCanvas(CanvasEnums.GameOver);
     public void HideGameOverCanvas() => HideCanvas(CanvasEnums.GameOver);
-    public void ShowHomeCanvas() => ShowCanvas(CanvasEnums.GameOver);
+    public void ShowHomeCanvas() => ShowCanvas(CanvasEnums.Home);
     public void HideHomeCanvas() => HideCanvas(CanvasEnums.Home);
     public void ShowCountDownCanvas() => ShowCanvas(CanvasEnums.CountDown);
     public void HideCountDownCanvas() => HideCanvas(CanvasEnums.CountDown);

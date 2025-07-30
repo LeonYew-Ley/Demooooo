@@ -40,6 +40,7 @@ public class PlayerManager : MonoBehaviour
     }
     public void SpawnPlayer()
     {
+        SLog.Hello();
         if (playerInstance != null)
         {
             Destroy(playerInstance);

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,15 +34,28 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
-        // 隐藏主界面
-        SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
-        // 地形生成
-        SEvent.Instance.TriggerEvent(EventName.GenerateHexPlatform);
-        // 启用玩家操控事件
-        SEvent.Instance.TriggerEvent(EventName.SpawnPlayer);
-        // 显示倒计时界面
-        SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
-
+        // 加载主场景
+        // 检查场景是否已加载
+        var scene = SceneManager.GetSceneByName("MainScene");
+        if (!scene.isLoaded)
+        {
+            // 异步加载并在完成后触发事件
+            var asyncOp = SceneManager.LoadSceneAsync("MainScene", LoadSceneMode.Additive);
+            asyncOp.completed += (op) =>
+            {
+                SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
+                SEvent.Instance.TriggerEvent(EventName.GenerateHexPlatform);
+                SEvent.Instance.TriggerEvent(EventName.SpawnPlayer);
+                SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
+            };
+        }
+        else
+        {
+            SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
+            SEvent.Instance.TriggerEvent(EventName.GenerateHexPlatform);
+            SEvent.Instance.TriggerEvent(EventName.SpawnPlayer);
+            SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
+        }
         SLog.Info("Game started.");
     }
 
@@ -50,9 +64,16 @@ public class GameManager : MonoBehaviour
         // 销毁场景
         this.TriggerEvent(EventName.DestroyPlatform);
         // TODO:销毁玩家&道具卡
+
         // 回到主界面
         this.TriggerEvent(EventName.ShowHomeCanvas);
         this.TriggerEvent(EventName.HideGameOver);
+        // 销毁MainScene
+        var scene = SceneManager.GetSceneByName("MainScene");
+        if (scene.isLoaded)
+        {
+            SceneManager.UnloadSceneAsync("MainScene");
+        }
         SLog.Info("Game Restarted.");
     }
 

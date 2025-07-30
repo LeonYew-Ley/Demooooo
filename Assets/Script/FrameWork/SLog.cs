@@ -104,4 +104,9 @@ public static class SLog
         string dateString = DateTime.Now.ToString("yyyy-MM-dd");
         return Path.Combine(logDirectory, $"log_{dateString}.txt");
     }
+
+    public static void Hello()
+    {
+        Info("Hello from SLog!");
+    }
 }

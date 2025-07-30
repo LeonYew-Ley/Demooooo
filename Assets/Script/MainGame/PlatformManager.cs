@@ -20,6 +20,17 @@ public class PlatformManager : MonoBehaviour
 
     void OnEnable()
     {
+        // 自动获取cellSize（正六边形边长=模型宽度/2）
+        if (hexCellPrefab != null)
+        {
+            MeshRenderer mr = hexCellPrefab.GetComponentInChildren<MeshRenderer>();
+            if (mr != null)
+            {
+                float width = mr.bounds.size.x;
+                cellSize = width / 2f;
+            }
+        }
+
         // 监听生成平台事件
         SEvent.Instance.AddListener(EventName.GenerateHexPlatform, GenerateHexPlatform);
         SEvent.Instance.AddListener(EventName.DestroyPlatform, DestroyPlatform);
@@ -31,23 +42,11 @@ public class PlatformManager : MonoBehaviour
         SEvent.Instance.RemoveListener(EventName.GenerateHexPlatform, GenerateHexPlatform);
         SEvent.Instance.RemoveListener(EventName.DestroyPlatform, DestroyPlatform);
     }
-    void Start()
-    {
-        // 自动获取cellSize（正六边形边长=模型宽度/2）
-        if (hexCellPrefab != null)
-        {
-            MeshRenderer mr = hexCellPrefab.GetComponentInChildren<MeshRenderer>();
-            if (mr != null)
-            {
-                float width = mr.bounds.size.x;
-                cellSize = width / 2f;
-            }
-        }
-    }
 
     // 生成蜂窝地板
     void GenerateHexPlatform()
     {
+        SLog.Hello();
         // 参考: https://www.redblobgames.com/grids/hexagons/
         int N = edgeLength;
         if (genPosList == null || genPosList.Length == 0)
@@ -71,6 +70,7 @@ public class PlatformManager : MonoBehaviour
                 }
             }
         }
+        SLog.Info("Hexagonal platform generated successfully.");
     }
     // 清理每一层的格子
     public void DestroyPlatform()
