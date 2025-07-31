@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2378903604227339928}
   - component: {fileID: 8683765207912884580}
-  - component: {fileID: 28239815089011775}
+  - component: {fileID: 6743032463262858262}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -48,9 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ca71246898bb394ca321c4c5eb157b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   playerPawnObj: {fileID: 6181552234951788886}
---- !u!114 &28239815089011775
+--- !u!114 &6743032463262858262
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,6 +92,7 @@ GameObject:
   - component: {fileID: 1366031535685243679}
   - component: {fileID: 4712146994779286069}
   - component: {fileID: 8323465706082279025}
+  - component: {fileID: 4770254204685215803}
   - component: {fileID: 2443492025706524359}
   m_Layer: 0
   m_Name: FreeLook Camera
@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 3813273969962142607}
   serializedVersion: 2
   m_LocalRotation: {x: 0.25340137, y: -0.00000007501816, z: 0.000000018398962, w: 0.9673613}
-  m_LocalPosition: {x: 0, y: 2.25, z: -5.02375}
+  m_LocalPosition: {x: 0, y: 2.25, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -268,6 +268,36 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!114 &4770254204685215803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813273969962142607}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e07cac4b2631c24db06ff1a01d8011a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontal:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 779d5c45-9397-4314-88f4-2f1c9d038ebe
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  vertical:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 397aeb7b-ca75-422c-8ddb-e99d192489ac
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!114 &2443492025706524359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +378,7 @@ Transform:
   m_GameObject: {fileID: 8175891955390225263}
   serializedVersion: 2
   m_LocalRotation: {x: 0.25340143, y: -0, z: -0, w: 0.9673612}
-  m_LocalPosition: {x: 0, y: 2.25, z: -5.02375}
+  m_LocalPosition: {x: 0, y: 2.25, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -503,7 +533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6788182650473434856, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.02375
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6788182650473434856, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -537,6 +567,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPawn
       objectReference: {fileID: 0}
+    - target: {fileID: 9082410077464409599, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
+      propertyPath: cameraRef
+      value: 
+      objectReference: {fileID: 5739482210038452049}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

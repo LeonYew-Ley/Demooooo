@@ -329,9 +329,9 @@ GameObject:
   m_Component:
   - component: {fileID: 292383574}
   - component: {fileID: 292383576}
-  - component: {fileID: 292383575}
+  - component: {fileID: 292383577}
   m_Layer: 0
-  m_Name: PlayerInputManager
+  m_Name: Player(Input)Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -352,23 +352,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 320374579}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &292383575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 292383573}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc6f01c6c5476a4429f1656298dc7853, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 813645704}
-  playerPrefab: {fileID: 9110257351555930179, guid: e3423504cfbd01148aea49534339d8a6, type: 3}
-  playerCamera: {fileID: 0}
-  playerParent: {fileID: 1349105987}
-  playerInstance: {fileID: 0}
 --- !u!114 &292383576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,7 +364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_MaxPlayerCount: 4
   m_AllowJoining: 1
   m_JoinBehavior: 0
@@ -429,6 +412,33 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &292383577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292383573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc6f01c6c5476a4429f1656298dc7853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInputs: []
+  spawnPoints:
+  - {fileID: 415956985}
+  - {fileID: 882313237}
+  - {fileID: 813645704}
+  - {fileID: 1175210379}
+  playerLayers:
+  - serializedVersion: 2
+    m_Bits: 1024
+  - serializedVersion: 2
+    m_Bits: 2048
+  - serializedVersion: 2
+    m_Bits: 4096
+  - serializedVersion: 2
+    m_Bits: 8192
 --- !u!1 &320374578
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,11 +641,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   gizmoRadius: 0.2
---- !u!20 &440371854 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 5739482210038452049, guid: b13935bedd9c0d44c9cde800aa32ae68, type: 3}
-  m_PrefabInstance: {fileID: 5449131006589414078}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &602806752
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,13 +1756,14 @@ GameObject:
   - component: {fileID: 1205914218}
   - component: {fileID: 1205914217}
   - component: {fileID: 1205914219}
+  - component: {fileID: 1205914220}
   m_Layer: 0
-  m_Name: MainCamera
+  m_Name: MainCamera(UI)
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1205914216
 Transform:
   m_ObjectHideFlags: 0
@@ -1876,6 +1882,18 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1205914215}
   m_Enabled: 1
+--- !u!114 &1205914220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205914215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a912cc91af185b48a5d075dac2d75a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1217828848
 GameObject:
   m_ObjectHideFlags: 0
@@ -3266,6 +3284,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerController
       objectReference: {fileID: 0}
+    - target: {fileID: 2292468788592683774, guid: b13935bedd9c0d44c9cde800aa32ae68, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2378903604227339928, guid: b13935bedd9c0d44c9cde800aa32ae68, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3306,10 +3328,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4625080291168096196, guid: b13935bedd9c0d44c9cde800aa32ae68, type: 3}
-      propertyPath: cameraRef
-      value: 
-      objectReference: {fileID: 440371854}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
