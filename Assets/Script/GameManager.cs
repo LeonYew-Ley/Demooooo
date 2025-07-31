@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     void OnEnable()
     {
-        SEvent.Instance.AddListener(EventName.PlayerDead, OnPlayerDead);
+        SEvent.Instance.AddListener(EventName.AllPlayerDead, OnPlayerDead);
         SEvent.Instance.AddListener(EventName.GameStart, StartGame);
         SEvent.Instance.AddListener(EventName.GameRestart, RestartGame);
     }
@@ -17,9 +17,9 @@ public class GameManager : MonoBehaviour
     }
     void OnDisable()
     {
-        SEvent.Instance.RemoveListener(EventName.PlayerDead, OnPlayerDead);
+        SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnPlayerDead);
         SEvent.Instance.RemoveListener(EventName.GameStart, StartGame);
-        SEvent.Instance.AddListener(EventName.GameRestart, RestartGame);
+        SEvent.Instance.RemoveListener(EventName.GameRestart, RestartGame);
     }
     private void InitializeApplication()
     {
@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
     {
         // 销毁场景
         this.TriggerEvent(EventName.DestroyPlatform);
+
         // TODO:销毁玩家&道具卡
 
         // 回到主界面

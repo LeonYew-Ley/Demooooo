@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6743032463262858262}
   m_Layer: 0
   m_Name: PlayerController
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -583,6 +583,10 @@ PrefabInstance:
     - target: {fileID: 7777132564461876077, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: m_Name
       value: PlayerPawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 7777132564461876077, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 9082410077464409599, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: cameraRef

@@ -8,7 +8,7 @@ public static class EventName
     public const string GenerateHexPlatform = nameof(GenerateHexPlatform);
     public const string SpawnPlayer = nameof(SpawnPlayer);
     public const string EnablePlayer = nameof(EnablePlayer);
-    public const string PlayerDead = nameof(PlayerDead);
+    public const string AllPlayerDead = nameof(AllPlayerDead);
     public const string GameStart = nameof(GameStart);
     public const string GameRestart = nameof(GameRestart);
     public const string DestroyPlatform = nameof(DestroyPlatform);

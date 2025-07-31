@@ -6,7 +6,7 @@ public class DeadDetection : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SEvent.Instance.TriggerEvent(EventName.PlayerDead);
+            SEvent.Instance.TriggerEvent(EventName.AllPlayerDead);
         }
     }
 }

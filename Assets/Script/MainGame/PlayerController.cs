@@ -38,14 +38,14 @@ public class PlayerController : MonoBehaviour
         if (moveAction != null) moveAction.Enable();
         if (jumpAction != null) jumpAction.Enable();
         if (dashAction != null) dashAction.Enable();
-        SEvent.Instance.AddListener(EventName.PlayerDead, OnPlayerDead);
+        SEvent.Instance.AddListener(EventName.AllPlayerDead, OnPlayerDead);
     }
     void OnDisable()
     {
         if (moveAction != null) moveAction.Disable();
         if (jumpAction != null) jumpAction.Disable();
         if (dashAction != null) dashAction.Disable();
-        SEvent.Instance.RemoveListener(EventName.PlayerDead, OnPlayerDead);
+        SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnPlayerDead);
     }
 
     void SetupInputActions()
@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
 
     void OnPlayerDead()
     {
-        SLog.Info("玩家死亡，2s后销毁Controller");
-        Destroy(gameObject, 2f);
+        SLog.Info("玩家死亡，0.5s后销毁Controller");
+        Destroy(gameObject, 0.5f);
     }
 }

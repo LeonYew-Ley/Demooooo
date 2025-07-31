@@ -26,12 +26,14 @@ public class PlayerManager : MonoBehaviour
         playerInputManager.onPlayerJoined += SpawnPlayers;
         // SEvent.Instance.AddListener(EventName.SpawnPlayer, SpawnPlayer);
         SEvent.Instance.AddListener(EventName.EnablePlayer, EnablePlayer);
+        SEvent.Instance.AddListener(EventName.AllPlayerDead, ClearPlayers);
     }
     void OnDisable()
     {
         playerInputManager.onPlayerJoined -= SpawnPlayers;
         // SEvent.Instance.RemoveListener(EventName.SpawnPlayer, SpawnPlayer);
         SEvent.Instance.RemoveListener(EventName.EnablePlayer, EnablePlayer);
+        SEvent.Instance.RemoveListener(EventName.AllPlayerDead, ClearPlayers);
     }
     public void SpawnPlayers(PlayerInput playerInput)
     {
@@ -58,6 +60,7 @@ public class PlayerManager : MonoBehaviour
 
     public void EnablePlayer()
     {
+        SLog.Info("Enabling all playersInputs.");
         // 遍历所有PlayerInput，启用其子物体中的Rigidbody的重力
         foreach (var playerInput in playerInputs)
         {
@@ -67,5 +70,11 @@ public class PlayerManager : MonoBehaviour
                 rb.useGravity = true;
             }
         }
+    }
+
+    public void ClearPlayers()
+    {
+        SLog.Info("Clearing all playersInputs.");
+        playerInputs.Clear();
     }
 }

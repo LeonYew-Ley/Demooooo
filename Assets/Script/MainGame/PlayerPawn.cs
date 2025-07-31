@@ -29,11 +29,11 @@ public class PlayerPawn : MonoBehaviour
     private Vector2 moveInput;
     void OnEnable()
     {
-        SEvent.Instance.AddListener(EventName.PlayerDead, OnPlayerDead);
+        SEvent.Instance.AddListener(EventName.AllPlayerDead, OnPlayerDead);
     }
     void OnDisable()
     {
-        SEvent.Instance.RemoveListener(EventName.PlayerDead, OnPlayerDead);
+        SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnPlayerDead);
     }
     void Awake()
     {
@@ -169,7 +169,7 @@ public class PlayerPawn : MonoBehaviour
 
     void OnPlayerDead()
     {
-        SLog.Info("玩家死亡，2s后销毁玩家对象");
-        Destroy(gameObject, 2f);
+        SLog.Info("玩家死亡，0.5s后销毁PlayerPawn");
+        Destroy(gameObject, 0.5f);
     }
 }
