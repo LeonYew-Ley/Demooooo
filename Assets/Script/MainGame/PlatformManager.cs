@@ -7,8 +7,14 @@ public class PlatformManager : MonoBehaviour
 
     [Header("蜂窝参数")]
     public int edgeLength = 7; // 每条边的格子数
-    [Header("多层平台生成位置（按顺序）")]
-    public Transform[] genPosList; // 多层平台生成位置
+    [System.Serializable]
+    public class PlatformGenInfo
+    {
+        public Transform position; // 平台生成位置
+        public int edgeLength = 7; // 该层边长
+    }
+    [Header("多层平台生成参数（按顺序）")]
+    public PlatformGenInfo[] genPosList; // 多层平台生成参数
     [HideInInspector]
     public float cellSize = 1f; // 自动获取格子边长（外接圆半径）
 
@@ -48,14 +54,15 @@ public class PlatformManager : MonoBehaviour
     {
         SLog.Hello();
         // 参考: https://www.redblobgames.com/grids/hexagons/
-        int N = edgeLength;
         if (genPosList == null || genPosList.Length == 0)
         {
             Debug.LogWarning("PlatformGenerate: genPosList 为空，未生成平台");
             return;
         }
-        foreach (var startPos in genPosList)
+        foreach (var info in genPosList)
         {
+            if (info == null || info.position == null) continue;
+            int N = info.edgeLength;
             for (int q = -N + 1; q <= N - 1; q++)
             {
                 for (int r = -N + 1; r <= N - 1; r++)
@@ -64,8 +71,8 @@ public class PlatformManager : MonoBehaviour
                     // 满足大六边形范围条件
                     if (Mathf.Max(Mathf.Abs(q), Mathf.Abs(r), Mathf.Abs(s)) < N)
                     {
-                        Vector3 pos = HexToWorld(q, r, cellSize) + startPos.position;
-                        Instantiate(hexCellPrefab, pos, Quaternion.identity, startPos);
+                        Vector3 pos = HexToWorld(q, r, cellSize) + info.position.position;
+                        Instantiate(hexCellPrefab, pos, Quaternion.identity, info.position);
                     }
                 }
             }
@@ -77,8 +84,10 @@ public class PlatformManager : MonoBehaviour
     {
         if (genPosList == null || genPosList.Length == 0)
             return;
-        foreach (var startPos in genPosList)
+        foreach (var info in genPosList)
         {
+            if (info == null || info.position == null) continue;
+            var startPos = info.position;
             for (int i = startPos.childCount - 1; i >= 0; i--)
             {
                 GameObject child = startPos.GetChild(i).gameObject;
