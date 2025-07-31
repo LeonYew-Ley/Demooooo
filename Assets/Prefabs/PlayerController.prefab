@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6743032463262858262}
   m_Layer: 0
   m_Name: PlayerController
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -538,7 +538,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4287390314462942943, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: m_UseGravity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6788182650473434856, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: m_LocalPosition.x

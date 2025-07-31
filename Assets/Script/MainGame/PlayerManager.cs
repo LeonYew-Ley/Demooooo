@@ -52,12 +52,20 @@ public class PlayerManager : MonoBehaviour
         playerControllerObj.GetComponentInChildren<CinemachineBrain>().ChannelMask = cinemachineCamera.OutputChannel;
 
         // BUG:没生效，CullingMask没变化
-        playerControllerObj.GetComponentInChildren<Camera>().cullingMask |= 1 << layerToAdd;
+        // playerControllerObj.GetComponentInChildren<Camera>().cullingMask |= 1 << layerToAdd;
         // playerControllerObj.GetComponentInChildren<InputHandler>().horizontal = playerInput.actions.FindAction("Look");
     }
 
     public void EnablePlayer()
     {
-        // 玩家激活逻辑已移除
+        // 遍历所有PlayerInput，启用其子物体中的Rigidbody的重力
+        foreach (var playerInput in playerInputs)
+        {
+            Rigidbody rb = playerInput.GetComponentInChildren<Rigidbody>();
+            if (rb != null)
+            {
+                rb.useGravity = true;
+            }
+        }
     }
 }

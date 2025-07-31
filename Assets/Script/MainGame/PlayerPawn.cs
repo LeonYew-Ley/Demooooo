@@ -92,7 +92,8 @@ public class PlayerPawn : MonoBehaviour
     {
         if (!isDashing && dashCooldownTimer <= 0)
         {
-            dashDirection = direction.normalized;
+            // Dash方向改为玩家当前朝向（transform.forward）
+            dashDirection = transform.forward.normalized;
             isDashing = true;
             dashTimer = dashDuration;
             dashCooldownTimer = dashCooldown;
