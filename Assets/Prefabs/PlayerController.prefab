@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 1366031535685243679}
   - component: {fileID: 4712146994779286069}
   - component: {fileID: 8323465706082279025}
-  - component: {fileID: 4770254204685215803}
+  - component: {fileID: 4246931652579762374}
   - component: {fileID: 2443492025706524359}
   m_Layer: 0
   m_Name: FreeLook Camera
@@ -268,37 +268,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
---- !u!114 &4770254204685215803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3813273969962142607}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e07cac4b2631c24db06ff1a01d8011a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontal:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 779d5c45-9397-4314-88f4-2f1c9d038ebe
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  vertical:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 397aeb7b-ca75-422c-8ddb-e99d192489ac
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
---- !u!114 &2443492025706524359
+--- !u!114 &4246931652579762374
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -306,6 +276,53 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3813273969962142607}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54bf3e2c55034a549bc6d310c8d52e56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScanRecursively: 1
+  SuppressInputWhileBlending: 1
+  IgnoreTimeScale: 0
+  m_ControllerManager:
+    Controllers:
+    - Name: Look Orbit X
+      Owner: {fileID: 1366031535685243679}
+      Enabled: 1
+      Input:
+        Input: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        Sensitivity: 200
+      InputValue: 0
+      Driver:
+        AccelTime: 0
+        DecelTime: 0
+    - Name: Look Orbit Y
+      Owner: {fileID: 1366031535685243679}
+      Enabled: 1
+      Input:
+        Input: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        Sensitivity: -100
+      InputValue: 0
+      Driver:
+        AccelTime: 0
+        DecelTime: 0
+    - Name: Orbit Scale
+      Owner: {fileID: 1366031535685243679}
+      Enabled: 1
+      Input:
+        Input: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        Sensitivity: 1
+      InputValue: 0
+      Driver:
+        AccelTime: 0
+        DecelTime: 0
+--- !u!114 &2443492025706524359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813273969962142607}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89875cdc57c54474a8a74efd9b2a3b5d, type: 3}
   m_Name: 
