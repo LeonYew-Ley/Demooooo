@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour
         SEvent.Instance.AddListener(EventName.HideGameOver, HideGameOverCanvas);
         SEvent.Instance.AddListener(EventName.ShowCountDownCanvas, ShowCountDownCanvas);
         SEvent.Instance.AddListener(EventName.HideCountDownCanvas, HideCountDownCanvas);
+        SEvent.Instance.AddListener(EventName.ShowReadyToStartCanvas, ShowReadyToStartCanvas);
+        SEvent.Instance.AddListener(EventName.HideReadyToStartCanvas, HideReadyToStartCanvas);
+        SEvent.Instance.AddListener<int>(EventName.UpdateReadyToStartCanvas, UpdateReadyToStartCanvas);
     }
     void OnDisable()
     {
@@ -28,6 +31,9 @@ public class UIManager : MonoBehaviour
         SEvent.Instance.RemoveListener(EventName.HideGameOver, HideGameOverCanvas);
         SEvent.Instance.RemoveListener(EventName.ShowCountDownCanvas, ShowCountDownCanvas);
         SEvent.Instance.RemoveListener(EventName.HideCountDownCanvas, HideCountDownCanvas);
+        SEvent.Instance.RemoveListener(EventName.ShowReadyToStartCanvas, ShowReadyToStartCanvas);
+        SEvent.Instance.RemoveListener(EventName.HideReadyToStartCanvas, HideReadyToStartCanvas);
+        SEvent.Instance.RemoveListener<int>(EventName.UpdateReadyToStartCanvas, UpdateReadyToStartCanvas);
     }
     public void ShowCanvas(CanvasEnums index)
     {
@@ -58,7 +64,7 @@ public class UIManager : MonoBehaviour
     #region 按钮点击事件
     public void OnStartBtnClick()
     {
-        SEvent.Instance.TriggerEvent(EventName.GameStart);
+        SEvent.Instance.TriggerEvent(EventName.GameEnter);
     }
     public void OnExitBtnClick()
     {
@@ -73,12 +79,44 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region 各种Canvas显示关闭方法
-    public void ShowGameOverCanvas() => ShowCanvas(CanvasEnums.GameOver);
+    public void ShowGameOverCanvas()
+    {
+        ShowCanvas(CanvasEnums.GameOver);
+        Invoke(nameof(TriggerToggleMainCamera), 1f);
+    }
+    private void TriggerToggleMainCamera()
+    {
+        SEvent.Instance.TriggerEvent(EventName.ToggleMainCamera);
+    }
+
     public void HideGameOverCanvas() => HideCanvas(CanvasEnums.GameOver);
     public void ShowHomeCanvas() => ShowCanvas(CanvasEnums.Home);
     public void HideHomeCanvas() => HideCanvas(CanvasEnums.Home);
     public void ShowCountDownCanvas() => ShowCanvas(CanvasEnums.CountDown);
     public void HideCountDownCanvas() => HideCanvas(CanvasEnums.CountDown);
+    public void ShowReadyToStartCanvas() => ShowCanvas(CanvasEnums.ReadyToStart);
+    public void HideReadyToStartCanvas() => HideCanvas(CanvasEnums.ReadyToStart);
+    public void UpdateReadyToStartCanvas(int playerNum)
+    {
+        var readyToStartCanvas = canvasList[(int)CanvasEnums.ReadyToStart];
+        var titleTextObj = readyToStartCanvas.transform.Find("bg/VerticalLayout/TitleText");
+        var textComponent = titleTextObj != null ? titleTextObj.GetComponent<TMPro.TextMeshProUGUI>() : null;
+        if (textComponent != null && playerNum == -1) // 玩家已满，显示准备开始文字
+        {
+            textComponent.text = $"即将开始游戏..";
+            SLog.Info($"Updated ReadyToStartCanvas text: {textComponent.text}");
+            return;
+        }
+        else if (textComponent != null && playerNum >= 0) // 更新玩家数量
+        {
+            textComponent.text = $"等待玩家加入.. ({playerNum}/2)";
+            SLog.Info($"Updated ReadyToStartCanvas text: {textComponent.text}");
+        }
+        else
+        {
+            SLog.Error("Text component not found in ReadyToStartCanvas");
+        }
+    }
     #endregion
 
 }
