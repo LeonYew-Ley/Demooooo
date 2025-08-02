@@ -19,7 +19,6 @@ public class STimerManager : MonoBehaviour
             return _instance;
         }
     }
-
     private void Awake()
     {
         if (_instance == null)
@@ -30,6 +29,7 @@ public class STimerManager : MonoBehaviour
         else if (_instance != this)
         {
             Destroy(gameObject);
+            return; // 直接返回，不再执行后续代码
         }
     }
 

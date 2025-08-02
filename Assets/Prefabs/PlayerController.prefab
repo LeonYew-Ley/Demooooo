@@ -540,6 +540,10 @@ PrefabInstance:
       propertyPath: m_UseGravity
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4287390314462942943, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6788182650473434856, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -592,6 +596,10 @@ PrefabInstance:
       propertyPath: cameraRef
       value: 
       objectReference: {fileID: 5739482210038452049}
+    - target: {fileID: 9082410077464409599, guid: cf5f17bd2d3031b45b94673561d49e1d, type: 3}
+      propertyPath: groundCheckRadius
+      value: 0.04
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
