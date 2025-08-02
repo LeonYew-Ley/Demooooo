@@ -9,10 +9,14 @@ public class GameManager : MonoBehaviour
     public PlayerInputManager playerInputMangaer; // 主界面Canvas
     [Header("UI相机")]
     public Camera uiCamera; // UI相机
+    [Header("局内设置")]
+    public int FlipInterval = 10; // 平台翻转间隔时间
+    private STimer flipTimer; // 平台翻转计时器
     void OnEnable()
     {
         SEvent.Instance.AddListener(EventName.AllPlayerDead, OnPlayerDead);
         SEvent.Instance.AddListener(EventName.GameEnter, EnterGame);
+        SEvent.Instance.AddListener(EventName.GameCountDown, CountDownInGame);
         SEvent.Instance.AddListener(EventName.GameStart, StartGame);
         SEvent.Instance.AddListener(EventName.GameRestart, RestartGame);
         SEvent.Instance.AddListener(EventName.ToggleMainCamera, ToggleMainCamera);
@@ -26,7 +30,8 @@ public class GameManager : MonoBehaviour
     {
         SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnPlayerDead);
         SEvent.Instance.RemoveListener(EventName.GameEnter, EnterGame);
-        SEvent.Instance.RemoveListener(EventName.GameStart, StartGame);
+        SEvent.Instance.RemoveListener(EventName.GameCountDown, CountDownInGame);
+        SEvent.Instance.AddListener(EventName.GameStart, StartGame);
         SEvent.Instance.RemoveListener(EventName.GameRestart, RestartGame);
         SEvent.Instance.RemoveListener(EventName.ToggleMainCamera, ToggleMainCamera);
     }
@@ -54,27 +59,40 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void StartGame()
+    private void CountDownInGame()
     {
         // 关闭ReadyToStartCanvas，开启倒计时
         SEvent.Instance.TriggerEvent(EventName.HideReadyToStartCanvas);
         SEvent.Instance.TriggerEvent(EventName.ShowCountDownCanvas);
         playerInputMangaer.DisableJoining(); // 禁用玩家加入
-        SLog.Info("Game started.");
+        SLog.Info("Game Starting.");
+    }
+
+    private void StartGame()
+    {
+        // 开启场景翻转倒计时（循环）
+        flipTimer = new STimer(FlipInterval, OnPlatformFlipped, true);
+        flipTimer.StartTimer();
+    }
+
+    private void OnPlatformFlipped()
+    {
+        SLog.Info("Platform Flipped.");
+        SEvent.Instance.TriggerEvent(EventName.FlipPlatform);
     }
 
     private void RestartGame()
     {
         // 销毁场景
         this.TriggerEvent(EventName.DestroyPlatform);
-
+        // 重置计时器
+        flipTimer.Dispose();
         // TODO:销毁玩家&道具卡
         // 回到主界面
         this.TriggerEvent(EventName.ShowHomeCanvas);
         this.TriggerEvent(EventName.HideGameOver);
 
         SLog.Info("Game Restarted.");
-
     }
 
     private void ToggleMainCamera()

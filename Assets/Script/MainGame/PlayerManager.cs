@@ -6,7 +6,10 @@ using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
-
+    [Header("平台对象")]
+    public Transform platformObj; // 平台对象
+    [Header("最大玩家数")]
+    public int maxPlayers = 1; // 最大玩家数
     [Header("玩家输入实例")]
     public List<PlayerInput> playerInputs = new List<PlayerInput>(); // 统计PlayerInput实例
     [Header("玩家出生点列表")]
@@ -16,7 +19,6 @@ public class PlayerManager : MonoBehaviour
 
     // 私有变量
     private PlayerInputManager playerInputManager; // 多人分屏管理组件
-    private int maxPlayers = 2; // 最大玩家数
 
     void Awake()
     {
@@ -26,14 +28,18 @@ public class PlayerManager : MonoBehaviour
     void OnEnable()
     {
         playerInputManager.onPlayerJoined += SpawnPlayers;
-        SEvent.Instance.AddListener(EventName.EnablePlayer, EnablePlayer);
+        SEvent.Instance.AddListener(EventName.GameStart, EnablePlayer);
         SEvent.Instance.AddListener(EventName.AllPlayerDead, ClearPlayers);
+        SEvent.Instance.AddListener(EventName.OnRotation, DisablePlayers);
+        SEvent.Instance.AddListener(EventName.EndRotation, GlidingPlayers);
     }
     void OnDisable()
     {
         playerInputManager.onPlayerJoined -= SpawnPlayers;
-        SEvent.Instance.RemoveListener(EventName.EnablePlayer, EnablePlayer);
+        SEvent.Instance.RemoveListener(EventName.GameStart, EnablePlayer);
         SEvent.Instance.RemoveListener(EventName.AllPlayerDead, ClearPlayers);
+        SEvent.Instance.RemoveListener(EventName.OnRotation, DisablePlayers);
+        SEvent.Instance.RemoveListener(EventName.EndRotation, GlidingPlayers);
     }
     public void SpawnPlayers(PlayerInput playerInput)
     {
@@ -45,6 +51,8 @@ public class PlayerManager : MonoBehaviour
         // 设置出生点坐标
         Transform playerControllerObj = playerInput.transform; // PlayerController
         playerControllerObj.position = spawnPoints[playerInputs.Count - 1].position;
+        if (platformObj != null)
+            playerControllerObj.SetParent(platformObj);// 将playerControllerObj放在Platform对象下
 
         // 设置摄像机层级
         CinemachineCamera cinemachineCamera = playerControllerObj.GetComponentInChildren<CinemachineCamera>();
@@ -81,6 +89,26 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+    public void DisablePlayers()
+    {
+        SLog.Info("Disabling all playersInputs.");
+        // 遍历所有PlayerInput，启用其子物体中的Rigidbody的重力
+        foreach (var playerInput in playerInputs)
+        {
+            Rigidbody rb = playerInput.GetComponentInChildren<Rigidbody>();
+            if (rb != null)
+            {
+                rb.useGravity = false;
+            }
+        }
+    }
+
+    public void GlidingPlayers()
+    {
+        SLog.Info("Gliding all playersInputs.");
+        EnablePlayer(); // 重新启用玩家输入
+    }
+
 
     public void ClearPlayers()
     {
@@ -95,6 +123,6 @@ public class PlayerManager : MonoBehaviour
     }
     void TriggerGameStart()
     {
-        SEvent.Instance.TriggerEvent(EventName.GameStart); // 触发倒计时，开始游戏
+        SEvent.Instance.TriggerEvent(EventName.GameCountDown); // 触发倒计时，开始游戏
     }
 }
