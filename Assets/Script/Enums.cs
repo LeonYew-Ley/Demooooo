@@ -14,6 +14,8 @@ public enum CanvasEnums
     Home,
     CountDown,
     ReadyToStart,
+    Notification,
+    InGameInfo
 }
 /// <summary>
 /// 按钮枚举，和UIManager中的按钮数组对应

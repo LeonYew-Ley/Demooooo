@@ -5,6 +5,28 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    void Start()
+    {
+        InitUI();
+    }
+    /// <summary>
+    /// 初始化UI，只显示HomeCanvas，其他Canvas全部关闭
+    /// </summary>
+    public void InitUI()
+    {
+        for (int i = 0; i < canvasList.Length; i++)
+        {
+            if (i == (int)CanvasEnums.Home)
+            {
+                canvasList[i].SetActive(true);
+            }
+            else
+            {
+                canvasList[i].SetActive(false);
+            }
+        }
+        SLog.Info("UI Initialized: Only HomeCanvas is active.");
+    }
     public Button[] buttons;
     public GameObject[] canvasList;
 
