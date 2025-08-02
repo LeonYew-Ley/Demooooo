@@ -112,7 +112,51 @@ public class PlatformManager : MonoBehaviour
             float z = size * Mathf.Sqrt(3f) * (r + q / 2f);
             return new Vector3(x, 0, z);
         }
-    }    // 倒转平台
+    }
+
+    // 计算平台中心点并同步到PlatformObj位置
+    public Vector3 CalculateAndSyncPlatformCenter()
+    {
+        if (platformObj == null)
+        {
+            SLog.Error("PlatformManager: platformObj is not assigned.");
+            return Vector3.zero;
+        }
+
+        if (platformObj.childCount == 0)
+        {
+            SLog.Warn("PlatformManager: No child objects found under platformObj.");
+            return platformObj.position;
+        }
+
+        // 输出父物体的Transform信息
+        SLog.Info($"PlatformObj Transform Info:");
+        SLog.Info($"  Position: {platformObj.position}");
+        SLog.Info($"  Rotation: {platformObj.rotation} (Euler: {platformObj.eulerAngles})");
+        SLog.Info($"  Scale: {platformObj.localScale}");
+        SLog.Info($"  Child Count: {platformObj.childCount}");
+
+        // 计算平台整体的中心点
+        Vector3 center = Vector3.zero;
+        int childCount = 0;
+        foreach (Transform child in platformObj)
+        {
+            center += child.position;
+            childCount++;
+        }
+        center /= childCount;
+
+        // 输出计算出的中心点信息
+        SLog.Info($"Calculated Center Point: {center}");
+
+        // 同步中心点位置到platformObj
+        platformObj.position = center;
+        SLog.Info($"PlatformObj position synced to center: {center}");
+
+        return center;
+    }
+
+    // 倒转平台
     public void FlipPlatform()
     {
         if (platformObj == null)
@@ -131,35 +175,9 @@ public class PlatformManager : MonoBehaviour
             yield break;
         }
 
-        // 计算平台整体的中心点
-        Vector3 center = Vector3.zero;
-        int childCount = 0;
-        foreach (Transform child in platformObj)
-        {
-            center += child.position;
-            childCount++;
-        }
-        center /= childCount;
-
-        // 创建临时的旋转中心点
-        GameObject tempPivot = new GameObject("TempRotationPivot");
-        tempPivot.transform.position = center;
-
-        // 将所有子物体临时设为这个旋转中心的子物体
-        Transform[] originalChildren = new Transform[platformObj.childCount];
-        for (int i = 0; i < platformObj.childCount; i++)
-        {
-            originalChildren[i] = platformObj.GetChild(i);
-        }
-
-        foreach (Transform child in originalChildren)
-        {
-            child.SetParent(tempPivot.transform);
-        }
-
-        // 执行整体旋转动画
+        // 执行整体旋转动画，直接旋转platformObj
         float elapsedTime = 0f;
-        Quaternion initialRotation = tempPivot.transform.rotation;
+        Quaternion initialRotation = platformObj.rotation;
         Quaternion targetRotation = initialRotation * Quaternion.Euler(180f, 0, 0);
 
         while (elapsedTime < flipDuration)
@@ -168,28 +186,17 @@ public class PlatformManager : MonoBehaviour
             // 使用平滑插值
             t = Mathf.SmoothStep(0f, 1f, t);
 
-            tempPivot.transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, t);
+            platformObj.rotation = Quaternion.Lerp(initialRotation, targetRotation, t);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         // 确保最终旋转精确
-        tempPivot.transform.rotation = targetRotation;
+        platformObj.rotation = targetRotation;
 
-        // 将子物体重新设回原来的父物体
-        foreach (Transform child in originalChildren)
-        {
-            if (child != null)
-            {
-                child.SetParent(platformObj);
-            }
-        }
-
-        // 销毁临时对象
-        DestroyImmediate(tempPivot);
         this.TriggerEvent(EventName.EndRotation); // 触发结束旋转事件
 
-        SLog.Info("Platform vertically flipped around collective center of mass.");
+        SLog.Info("Platform vertically flipped around its center.");
     }
 }

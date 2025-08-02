@@ -3,9 +3,31 @@ using Unity.Cinemachine;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class PlayerManager : MonoBehaviour
 {
+    // 单例模式
+    private static PlayerManager instance;
+    public static PlayerManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindFirstObjectByType<PlayerManager>();
+                if (instance == null)
+                {
+                    GameObject singletonObject = new GameObject();
+                    instance = singletonObject.AddComponent<PlayerManager>();
+                    singletonObject.name = typeof(PlayerManager).ToString() + " (Singleton)";
+                    DontDestroyOnLoad(singletonObject);
+                }
+            }
+            return instance;
+        }
+    }
+
     [Header("平台对象")]
     public Transform platformObj; // 平台对象
     [Header("最大玩家数")]
@@ -22,6 +44,18 @@ public class PlayerManager : MonoBehaviour
 
     void Awake()
     {
+        // 确保只有一个实例存在
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         playerInputManager = GetComponent<PlayerInputManager>();
     }
 
@@ -32,6 +66,7 @@ public class PlayerManager : MonoBehaviour
         SEvent.Instance.AddListener(EventName.AllPlayerDead, ClearPlayers);
         SEvent.Instance.AddListener(EventName.OnRotation, DisablePlayers);
         SEvent.Instance.AddListener(EventName.EndRotation, GlidingPlayers);
+
     }
     void OnDisable()
     {
@@ -64,7 +99,7 @@ public class PlayerManager : MonoBehaviour
         playerControllerObj.GetComponentInChildren<CinemachineBrain>().ChannelMask = cinemachineCamera.OutputChannel;
 
         // 更新ReadyToStartCanvas的玩家数量
-        this.TriggerEvent(EventName.UpdateReadyToStartCanvas, playerInputs.Count);
+        this.TriggerEvent(EventName.UpdateReadyToStartCanvas, playerInputs.Count, maxPlayers);
 
         // 如果达到最大玩家数，开始游戏并禁用PlayerInputManager
         if (playerInputs.Count == maxPlayers)
@@ -119,10 +154,14 @@ public class PlayerManager : MonoBehaviour
 
     void UpdateReadyToStartCanvasDelayed()
     {
-        this.TriggerEvent(EventName.UpdateReadyToStartCanvas, -1);//更新玩家数量为-1，表示已满
+        this.TriggerEvent(EventName.UpdateReadyToStartCanvas, -1, maxPlayers);//更新玩家数量为-1，表示已满
     }
     void TriggerGameStart()
     {
         SEvent.Instance.TriggerEvent(EventName.GameCountDown); // 触发倒计时，开始游戏
+    }
+    public int GetMaxPlayer()
+    {
+        return maxPlayers;
     }
 }

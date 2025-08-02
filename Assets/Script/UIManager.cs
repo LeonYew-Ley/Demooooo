@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
         SEvent.Instance.AddListener(EventName.HideCountDownCanvas, HideCountDownCanvas);
         SEvent.Instance.AddListener(EventName.ShowReadyToStartCanvas, ShowReadyToStartCanvas);
         SEvent.Instance.AddListener(EventName.HideReadyToStartCanvas, HideReadyToStartCanvas);
-        SEvent.Instance.AddListener<int>(EventName.UpdateReadyToStartCanvas, UpdateReadyToStartCanvas);
+        SEvent.Instance.AddListener<int, int>(EventName.UpdateReadyToStartCanvas, UpdateReadyToStartCanvas);
     }
     void OnDisable()
     {
@@ -57,7 +57,7 @@ public class UIManager : MonoBehaviour
         SEvent.Instance.RemoveListener(EventName.HideCountDownCanvas, HideCountDownCanvas);
         SEvent.Instance.RemoveListener(EventName.ShowReadyToStartCanvas, ShowReadyToStartCanvas);
         SEvent.Instance.RemoveListener(EventName.HideReadyToStartCanvas, HideReadyToStartCanvas);
-        SEvent.Instance.RemoveListener<int>(EventName.UpdateReadyToStartCanvas, UpdateReadyToStartCanvas);
+        SEvent.Instance.RemoveListener<int, int>(EventName.UpdateReadyToStartCanvas, UpdateReadyToStartCanvas);
     }
     public void ShowCanvas(CanvasEnums index)
     {
@@ -118,9 +118,13 @@ public class UIManager : MonoBehaviour
     public void HideHomeCanvas() => HideCanvas(CanvasEnums.Home);
     public void ShowCountDownCanvas() => ShowCanvas(CanvasEnums.CountDown);
     public void HideCountDownCanvas() => HideCanvas(CanvasEnums.CountDown);
-    public void ShowReadyToStartCanvas() => ShowCanvas(CanvasEnums.ReadyToStart);
+    public void ShowReadyToStartCanvas()
+    {
+        ShowCanvas(CanvasEnums.ReadyToStart);
+        UpdateReadyToStartCanvas(0, PlayerManager.Instance.GetMaxPlayer()); // 默认显示等待玩家加入
+    }
     public void HideReadyToStartCanvas() => HideCanvas(CanvasEnums.ReadyToStart);
-    public void UpdateReadyToStartCanvas(int playerNum)
+    public void UpdateReadyToStartCanvas(int playerNum, int maxPlayersNum)
     {
         var readyToStartCanvas = canvasList[(int)CanvasEnums.ReadyToStart];
         var titleTextObj = readyToStartCanvas.transform.Find("bg/VerticalLayout/TitleText");
@@ -133,7 +137,7 @@ public class UIManager : MonoBehaviour
         }
         else if (textComponent != null && playerNum >= 0) // 更新玩家数量
         {
-            textComponent.text = $"等待玩家加入.. ({playerNum}/2)";
+            textComponent.text = $"等待玩家加入.. ({playerNum}/{maxPlayersNum})";
             SLog.Info($"Updated ReadyToStartCanvas text: {textComponent.text}");
         }
         else

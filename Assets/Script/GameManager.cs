@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     private STimer flipTimer; // 平台翻转计时器
     void OnEnable()
     {
-        SEvent.Instance.AddListener(EventName.AllPlayerDead, OnPlayerDead);
+        SEvent.Instance.AddListener(EventName.AllPlayerDead, OnAllPlayerDead);
         SEvent.Instance.AddListener(EventName.GameEnter, EnterGame);
         SEvent.Instance.AddListener(EventName.GameCountDown, CountDownInGame);
         SEvent.Instance.AddListener(EventName.GameStart, StartGame);
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
             flipTimer = null;
         }
 
-        SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnPlayerDead);
+        SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnAllPlayerDead);
         SEvent.Instance.RemoveListener(EventName.GameEnter, EnterGame);
         SEvent.Instance.RemoveListener(EventName.GameCountDown, CountDownInGame);
         SEvent.Instance.RemoveListener(EventName.GameStart, StartGame);
@@ -51,10 +51,11 @@ public class GameManager : MonoBehaviour
         SLog.Info("Application started.");
     }
 
-    private void OnPlayerDead()
+    private void OnAllPlayerDead()
     {
         SLog.Info($"Open Dead Canvas");
         SEvent.Instance.TriggerEvent(EventName.ShowGameOver);
+
     }
 
     public void EnterGame()
@@ -105,10 +106,9 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
-        // 销毁场景
-        this.TriggerEvent(EventName.DestroyPlatform);
-        // 重置计时器
-        flipTimer.Dispose();
+        flipTimer.Dispose();        // 重置计时器
+        this.TriggerEvent(EventName.DestroyPlatform);        // 销毁场景
+
         // TODO:销毁玩家&道具卡
         // 回到主界面
         this.TriggerEvent(EventName.ShowHomeCanvas);
