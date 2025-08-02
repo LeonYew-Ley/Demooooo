@@ -22,32 +22,30 @@ public class STimer
     }
 
 
-    public void StartTimer()
+    public void Start()
     {
         Elapsed = 0f;
         IsRunning = true;
     }
 
 
-    public void StopTimer()
+    public void Stop()
     {
         IsRunning = false;
     }
 
 
-    public void ResetTimer()
+    public void Reset()
     {
         Elapsed = 0f;
         IsRunning = false;
     }
 
 
-    public void ResumeTimer()
+    public void Resume()
     {
         IsRunning = true;
     }
-
-
     public void Tick(float deltaTime)
     {
         if (!IsRunning)
@@ -57,10 +55,12 @@ public class STimer
 
         if (Elapsed >= Duration)
         {
+            SLog.Info($"Timer completed! Duration: {Duration}s, Actual elapsed: {Elapsed}s");
             onComplete?.Invoke();
             if (IsLooping)
             {
-                Elapsed -= Duration; // 保留多余的时间（精度更高）
+                Elapsed = 0f; // 保留多余的时间（精度更高）
+                SLog.Info($"Timer restarted for loop. Remaining time carried over: {Elapsed}s");
             }
             else
             {

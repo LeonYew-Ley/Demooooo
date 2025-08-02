@@ -34,6 +34,6 @@ public class CountDownUI : MonoBehaviour
         // 触发关闭Canvas事件（假设事件名为 EventName.CloseCountDownCanvas）
         this.TriggerEvent(EventName.HideCountDownCanvas);
         // 开始游戏
-        SEvent.Instance.TriggerEvent(EventName.GameStart); // 开启玩家重力
+        SEvent.Instance.TriggerEvent(EventName.GameStart); // 游戏正式开始，开启玩家重力和场景翻转计时
     }
 }

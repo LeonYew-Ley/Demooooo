@@ -16,11 +16,10 @@ public class TestButtons : MonoBehaviour
         // 添加按钮点击事件监听
         buttons[(int)TestBtnName.ReversePlatform].onClick.AddListener(OnReversePlatformBtnClick);
     }
-
     public void OnReversePlatformBtnClick()
     {
         SLog.Info("Reverse Platform Button Clicked.");
         // 触发事件，反转平台
-        SEvent.Instance.TriggerEvent(EventName.FlipPlatform);
+        // SEvent.Instance.TriggerEvent(EventName.FlipPlatform); // 暂时注释掉
     }
 }

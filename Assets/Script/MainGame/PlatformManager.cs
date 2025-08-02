@@ -5,20 +5,10 @@ public class PlatformManager : MonoBehaviour
 {
     [Header("平台对象")]
     public Transform platformObj; // 平台对象
-    public Transform RotateCenterObj; // 平台旋转中心对象（可选）
     [Header("格子预制体")]
-    public GameObject hexCellPrefab; // 正六边形格子的预制体
-
-    [Header("蜂窝参数")]
-    public int edgeLength = 7; // 每条边的格子数
-    [System.Serializable]
-    public class PlatformGenInfo
-    {
-        public Transform position; // 平台生成位置
-        public int edgeLength = 7; // 该层边长
-    }
-    [Header("多层平台生成参数（按顺序）")]
-    public PlatformGenInfo[] genPosList; // 多层平台生成参数
+    public GameObject hexCellPrefab; // 正六边形格子的预制体    [Header("蜂窝参数")]
+    [Header("多层平台边长设置（按顺序）")]
+    public int[] layerEdgeLengths; // 每一层的边长数组
     [Header("层高设置")]
     public float layerHeight = 13f; // 每一层之间的高度间距
     [HideInInspector]
@@ -58,21 +48,20 @@ public class PlatformManager : MonoBehaviour
     {
         SLog.Hello();
         // 参考: https://www.redblobgames.com/grids/hexagons/
-        if (genPosList == null || genPosList.Length == 0)
+        if (layerEdgeLengths == null || layerEdgeLengths.Length == 0)
         {
-            Debug.LogWarning("PlatformGenerate: genPosList 为空，未生成平台");
+            Debug.LogWarning("PlatformGenerate: layerEdgeLengths 为空，未生成平台");
             return;
         }
 
-        for (int layerIndex = 0; layerIndex < genPosList.Length; layerIndex++)
+        for (int layerIndex = 0; layerIndex < layerEdgeLengths.Length; layerIndex++)
         {
-            var info = genPosList[layerIndex];
-            if (info == null || info.position == null) continue;
+            int edgeLengthForLayer = layerEdgeLengths[layerIndex];
 
             // 计算当前层的高度 (从y=0开始，每层递增layerHeight)
             float currentLayerY = layerIndex * layerHeight;
 
-            int N = info.edgeLength;
+            int N = edgeLengthForLayer;
             for (int q = -N + 1; q <= N - 1; q++)
             {
                 for (int r = -N + 1; r <= N - 1; r++)
@@ -82,30 +71,25 @@ public class PlatformManager : MonoBehaviour
                     if (Mathf.Max(Mathf.Abs(q), Mathf.Abs(r), Mathf.Abs(s)) < N)
                     {
                         Vector3 hexPos = HexToWorld(q, r, cellSize);
-                        Vector3 basePos = info.position.position;
+                        Vector3 basePos = platformObj.position;
                         // 设置Y坐标为计算的层高度
                         Vector3 pos = new Vector3(hexPos.x + basePos.x, currentLayerY, hexPos.z + basePos.z);
-                        Instantiate(hexCellPrefab, pos, Quaternion.identity, info.position);
+                        Instantiate(hexCellPrefab, pos, Quaternion.identity, platformObj);
                     }
                 }
             }
         }
         SLog.Info("Hexagonal platform generated successfully.");
-    }
-    // 清理每一层的格子
+    }    // 清理每一层的格子
     public void DestroyPlatform()
     {
-        if (genPosList == null || genPosList.Length == 0)
+        if (platformObj == null)
             return;
-        foreach (var info in genPosList)
+
+        for (int i = platformObj.childCount - 1; i >= 0; i--)
         {
-            if (info == null || info.position == null) continue;
-            var startPos = info.position;
-            for (int i = startPos.childCount - 1; i >= 0; i--)
-            {
-                GameObject child = startPos.GetChild(i).gameObject;
-                GameObject.DestroyImmediate(child);
-            }
+            GameObject child = platformObj.GetChild(i).gameObject;
+            GameObject.DestroyImmediate(child);
         }
     }
     // 轴向坐标转世界坐标

@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     [Header("UI相机")]
     public Camera uiCamera; // UI相机
     [Header("局内设置")]
-    public int FlipInterval = 10; // 平台翻转间隔时间
+    public float FlipInterval = 10f; // 平台翻转间隔时间
     private STimer flipTimer; // 平台翻转计时器
     void OnEnable()
     {
@@ -28,10 +28,17 @@ public class GameManager : MonoBehaviour
     }
     void OnDisable()
     {
+        // 清理定时器
+        if (flipTimer != null)
+        {
+            flipTimer.Dispose();
+            flipTimer = null;
+        }
+
         SEvent.Instance.RemoveListener(EventName.AllPlayerDead, OnPlayerDead);
         SEvent.Instance.RemoveListener(EventName.GameEnter, EnterGame);
         SEvent.Instance.RemoveListener(EventName.GameCountDown, CountDownInGame);
-        SEvent.Instance.AddListener(EventName.GameStart, StartGame);
+        SEvent.Instance.RemoveListener(EventName.GameStart, StartGame);
         SEvent.Instance.RemoveListener(EventName.GameRestart, RestartGame);
         SEvent.Instance.RemoveListener(EventName.ToggleMainCamera, ToggleMainCamera);
     }
@@ -67,12 +74,23 @@ public class GameManager : MonoBehaviour
         playerInputMangaer.DisableJoining(); // 禁用玩家加入
         SLog.Info("Game Starting.");
     }
-
     private void StartGame()
     {
+        SLog.Info("Game Begin.");
+
+        // 先清理旧的定时器（如果存在）
+        if (flipTimer != null)
+        {
+            SLog.Info("Disposing existing flip timer.");
+            flipTimer.Dispose();
+            flipTimer = null;
+        }
+
         // 开启场景翻转倒计时（循环）
+        SLog.Info($"Creating flip timer with interval: {FlipInterval}s");
         flipTimer = new STimer(FlipInterval, OnPlatformFlipped, true);
-        flipTimer.StartTimer();
+        flipTimer.Start();
+        SLog.Info("Flip timer started.");
     }
 
     private void OnPlatformFlipped()
