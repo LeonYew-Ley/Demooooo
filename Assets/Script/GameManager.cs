@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [Header("UI相机")]
     public Camera uiCamera; // UI相机
     [Header("局内设置")]
+
+    public GameObject AirWallObj; // 空气墙对象
     public float FlipInterval = 10f; // 平台翻转间隔时间
     private STimer flipTimer; // 平台翻转计时器
     void OnEnable()
@@ -57,6 +59,7 @@ public class GameManager : MonoBehaviour
 
     public void EnterGame()
     {
+        AirWallObj.SetActive(true); // 激活空气墙
         SLog.Info("Game Entered.");
         // 关闭主界面，打开ReadyToStartCanvas
         SEvent.Instance.TriggerEvent(EventName.HideHomeCanvas);
@@ -76,6 +79,7 @@ public class GameManager : MonoBehaviour
     }
     private void StartGame()
     {
+        AirWallObj.SetActive(false);
         SLog.Info("Game Begin.");
 
         // 先清理旧的定时器（如果存在）

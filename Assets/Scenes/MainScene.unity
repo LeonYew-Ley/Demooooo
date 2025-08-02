@@ -593,7 +593,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputMangaer: {fileID: 292383576}
   uiCamera: {fileID: 1205914218}
-  FlipInterval: 10
+  AirWallObj: {fileID: 919132149101676855}
+  FlipInterval: 5
 --- !u!1 &256964432
 GameObject:
   m_ObjectHideFlags: 0
@@ -7224,13 +7225,14 @@ GameObject:
   - component: {fileID: 543450653627290509}
   - component: {fileID: 3469287837544193064}
   - component: {fileID: 1711813855697922274}
+  - component: {fileID: 3469287837544193065}
   m_Layer: 0
   m_Name: ReadyAirWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &1711813855697922274
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7283,6 +7285,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149101676855}
+  m_Mesh: {fileID: 1111383812778068715, guid: 2c935c7d3c51f1345a3f69374a7d163f, type: 3}
+--- !u!64 &3469287837544193065
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149101676855}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1111383812778068715, guid: 2c935c7d3c51f1345a3f69374a7d163f, type: 3}
 --- !u!1 &4830232738361331077
 GameObject:
